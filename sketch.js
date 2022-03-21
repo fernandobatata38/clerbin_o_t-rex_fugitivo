@@ -1,31 +1,32 @@
-var caixa;
-function setup() {
-  caixa = createSprite(200,200,20,20);
-  createCanvas(400,400);
+var chao ,ground2;
+var trex ,trex_correndo;
+
+function preload(){
+  trex_correndo = loadAnimation("imgs/trex1.png", "imgs/trex3.png", "imgs/trex4.png");
+  ground2=loadAnimation("imgs/ground2.png");
 }
 
-function draw() 
-{
-  background(30);
+function setup(){
+  createCanvas(600,200);
+  
+  //crie um sprite de trex
+  trex = createSprite(50,157,20,50);
+  trex.addAnimation("correndo", trex_correndo);
+  
+  chao=createSprite(200,180,400,20);
+  chao.addAnimation("ground2",ground2);
+  
+}
+
+function draw(){
+  trex.collide(chao);
+  pulo();
+  background("white");
   drawSprites();
-  if(keyIsDown(RIGHT_ARROW)){
-    caixa.position.x=caixa.position.x+3;
-  }
-  if(keyIsDown(LEFT_ARROW)){
-    caixa.position.x=caixa.position.x-3;
-  }
-  if(keyIsDown(UP_ARROW)){
-    caixa.position.y=caixa.position.y-3;
-  }
-  if(keyIsDown(DOWN_ARROW)){
-    caixa.position.y=caixa.position.y+3;
-  }
-
 }
-
-
-
-
-
-
-
+function pulo(){
+  if(keyDown(UP_ARROW)){
+    trex.velocityY=-10;
+  }
+  trex.velocityY=+7;
+}
