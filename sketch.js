@@ -1,9 +1,11 @@
 var chao ,ground2;
 var trex ,trex_correndo;
 var chao_invisivel;
+var nuvem,imagem_nuvem;
 function preload(){
   trex_correndo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
   ground2=loadImage("ground2.png");
+   imagem_nuvem=loadImage("cloud.png");
 }
 
 function setup(){
@@ -22,10 +24,12 @@ function setup(){
 
 function draw(){
   trex.collide(chao_invisivel);
-  console.log(trex.y);
+  //console.log(trex.y);
   pulo();
   chao_movimentando();
   background("white");
+  nuvens();
+  text("X: "+mouseX+" / Y: "+mouseY,mouseX,mouseY);
   drawSprites();
 }
 function pulo(){
@@ -39,4 +43,14 @@ function chao_movimentando(){
   if(chao.x<0){
     chao.x=chao.width/2
   }
+}
+function nuvens(){
+  if(frameCount%60===0){
+    nuvem=createSprite(600,random(30,95),40,10);
+nuvem.velocityX=-3
+    nuvem.addImage(imagem_nuvem)
+    nuvem.scale=random(0.5,1.4)
+    nuvem.depth=trex.depth-1
+  }
+
 }
