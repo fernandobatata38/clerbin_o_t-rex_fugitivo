@@ -1,4 +1,7 @@
 var chao ,ground2;
+var sofrimento;
+var pulou;
+var chequipointi;
 var mortim_da_silva;
 var pontuacao=0;
 var FUGINDO=1;
@@ -6,13 +9,20 @@ var CAPTURADO=0;
 var estadodejogo=FUGINDO;
 var grupodenuvem;
 var estepao;
+var gameover;
+var restart;
+var gameover2
+var restart2
 var trex ,trex_correndo;
 var chao_invisivel;
 var nuvem,imagem_nuvem;
 var estepe_dos_agiota,estepe1,estepe2,estepe3,estepe4,estepe5,estepe6;
+
 function preload(){
   trex_correndo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
   ground2=loadImage("ground2.png");
+  gameover=loadImage("gameOver.png");
+  restart=loadImage("restart.png");
   mortim_da_silva=loadAnimation("trex_collided.png");
    imagem_nuvem=loadImage("cloud.png");
    estepe1=loadImage("obstacle1.png");
@@ -21,6 +31,9 @@ function preload(){
    estepe4=loadImage("obstacle4.png");
    estepe5=loadImage("obstacle5.png");
    estepe6=loadImage("obstacle6.png");
+  sofrimento=loadSound("die.mp3");
+  pulou=loadSound("jump.mp3");
+  chequipointi=loadSound("checkpoint.mp3");
 }
 
 function setup(){
@@ -33,11 +46,19 @@ function setup(){
   chao_invisivel.visible=false;
   trex.addAnimation("correndo", trex_correndo);
   trex.scale=0.6
-  trex.addAnimation(mortim_da_silva);
+  trex.addAnimation("morrendo",mortim_da_silva);
   chao=createSprite(200,180,400,20);
   chao.addImage("ground2",ground2);
   trex.debug=true;
-  trex.setCollider("circle",0,0,35)
+  trex.setCollider("circle",0,0,35);
+  gameover2=createSprite(300,100);
+  gameover2.addImage(gameover);
+  gameover2.visible=false;
+  gameover2.scale=0.5;
+  restart2=createSprite(300,140);
+  restart2.addImage(restart);
+  restart2.visible=false;
+  restart2.scale=0.5;
 }
 
 function draw(){
@@ -53,17 +74,19 @@ function draw(){
   chao_movimentando();
   background("white");
   nuvens();
-
+    verificacao();
   }
   else if(estadodejogo===CAPTURADO){
     background("black");
-    chao.velocityX=0
+    chao.velocityX=0;
     estepao.setVelocityXEach(0);
     grupodenuvem.setVelocityXEach(0);
-    trex.velocityY=0
+    trex.velocityY=0;
     trex.changeAnimation("morrendo",mortim_da_silva);
     grupodenuvem.setLifetimeEach(-1);
     estepao.setLifetimeEach(-1);
+    gameover2.visible=true;
+    restart2.visible=true;
   }
   drawSprites();
   text("pontuação:"+pontuacao,500,50);
@@ -72,11 +95,13 @@ function draw(){
 function pulo(){
   if(keyDown("up") && trex.y>151){
     trex.velocityY=-11;
+    pulou.play();
+    
   }
   trex.velocityY+=0.8;
 }
 function chao_movimentando(){
-  chao.velocityX=-6
+  chao.velocityX=-(6+pontuacao/1000);
   if(chao.x<0){
     chao.x=chao.width/2
   }
@@ -98,7 +123,7 @@ nuvem.velocityX=-3
 function trupique(){
 if(frameCount%90===0){
   estepe_dos_agiota=createSprite(600,181,10,10);
-  estepe_dos_agiota.velocityX=-6
+  estepe_dos_agiota.velocityX=-(6+pontuacao/1000);
   switch(Math.round(random(1,6))){
     case 1:
       estepe_dos_agiota.addImage(estepe1);
@@ -133,5 +158,14 @@ function vermouse(){
 function verseperdeu(){
   if(trex.isTouching (estepao)){
     estadodejogo=CAPTURADO;
+    
+  }
+}
+function verificacao(){
+  if(pontuacao%1000===0){
+    
+    
+
+    chequipointi.play();
   }
 }
